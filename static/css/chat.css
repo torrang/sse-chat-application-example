@@ -1,0 +1,24 @@
+h4 {
+    margin-bottom: 4px;
+}
+#chatBox {
+    width: 300px;
+    height: 400px;
+    padding: 6px 8px 20px 8px;
+    border: 1px solid #ddd;
+    overflow-y: auto;
+}
+
+#chatBox > .chat {
+    margin: 4px;
+}
+
+#chatBox > .chat > .chat-sender {
+    margin-bottom: 4px;
+}
+#chatBox > .chat > .chat-message {
+    display: inline-block;
+    background-color: #e8e8e8;
+    border-radius: 4px;
+    padding: 4px 8px;
+}

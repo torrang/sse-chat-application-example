@@ -2,18 +2,14 @@ import time
 import json
 import queue
 import logging
-from typing import Dict
 
 import flask
 from flask import request, Response, jsonify, render_template
-
-from chat_models import Room, User
 
 app = flask.Flask(__name__)
 logger = logging.getLogger(__name__)
 
 # Global variables
-rooms: Dict[int, Room] = {}
 chat_stream_queue: queue.Queue = queue.Queue(maxsize=100)
 
 

@@ -1,13 +1,29 @@
 
+function isEmpty(v) {
+    if (v === undefined || v === null) {
+        return true;
+    }
+
+    return v.length === 0;
+}
+
 // Connect to chat stream on load
 window.addEventListener('load', function () {
     const chatStream = new EventSource("/api/v1/stream");
     const chatBox = this.document.getElementById("chatBox");
 
+    chatStream.onopen = () => {
+        console.log("chat server connected");
+    }
+
+    chatStream.onerror = (event) => {
+        console.log("error: ", event);
+    }
+
     chatStream.onmessage = (event) => {
         // Parse chat
         const chatData = JSON.parse(event.data);
-        console.log(chatData);
+        console.log("server event: ", event);
 
         // Create chat
         const chat = document.createElement("div");
@@ -31,4 +47,42 @@ window.addEventListener('load', function () {
         chat.appendChild(message);
         chatBox.appendChild(chat);
     }
+
+    document.querySelector("input[name='chatText']").addEventListener("keypress", function(e) {
+        if (e.key !== 'Enter') {
+            return;
+        }
+
+        e.preventDefault();
+
+        // Get username
+        const chatUser = document.querySelector("input[name='chatUser']");
+        const username = !isEmpty(chatUser.value) ? chatUser.value : "Anonymous";
+        const message = e.target.value;
+
+        // Do nothing if no message entered
+        if (isEmpty(message)) {
+            return;
+        }
+
+        // Remove entered message
+        e.target.value = "";
+
+        // Send message
+        fetch("/api/v1/message", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({
+                "sender": username,
+                "message": message
+            })
+        })
+        .then((response) => {
+            // Move to bottom of chatbox
+            chatBox.scrollTo(0, chatBox.scrollHeight);
+        })
+        .then((result) => {})
+    })
 });

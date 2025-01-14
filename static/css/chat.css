@@ -22,3 +22,17 @@ h4 {
     border-radius: 4px;
     padding: 4px 8px;
 }
+
+#chatForm > input {
+    padding: 8px;
+    margin-top: 8px;
+    border: 1px solid #cccccc;
+}
+
+#chatForm > input[name='chatText'] {
+    width: 212px;
+}
+
+#chatForm > input[name='chatUser'] {
+    width: 100px;
+}

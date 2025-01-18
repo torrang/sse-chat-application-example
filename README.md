@@ -12,8 +12,9 @@ Rooms are stored in memory but chat logs aren't stored on anywhere.
 
 1. Clone this repository
 2. Install the dependencies
-3. Run the server with `python app.py`
-4. Open the browser and navigate to `http://localhost:5000/`
+3. Run redis server
+4. Run the server with `python app.py`
+5. Open the browser and navigate to `http://localhost:5000/`
 
 ### 3. How it works?
 

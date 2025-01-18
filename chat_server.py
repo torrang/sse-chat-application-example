@@ -1,28 +1,49 @@
-import time
+import sys
 import json
-import queue
 import logging
+from typing import Optional
+from logging.config import dictConfig
 
+import redis
 import flask
 from flask import request, Response, jsonify, render_template
 
-app = flask.Flask(__name__)
-logger = logging.getLogger(__name__)
-
 # Global variables
-chat_stream_queue: queue.Queue = queue.Queue(maxsize=100)
+redis_channel = "sse-chat"
+redis_client: Optional[redis.Redis] = None
+app = flask.Flask(__name__)
+logger = logging.getLogger()
+
+
+def configure_logger():
+    dictConfig({
+        'version': 1,
+        'formatters': {'default': {
+            'format': '[%(asctime)s] %(levelname)s in %(module)s: %(message)s',
+        }},
+        'handlers': {'wsgi': {
+            'class': 'logging.StreamHandler',
+            'stream': 'ext://flask.logging.wsgi_errors_stream',
+            'formatter': 'default'
+        }},
+        'root': {
+            'level': 'DEBUG',
+            'handlers': ['wsgi']
+        }
+    })
 
 
 def stream_queue():
     with app.app_context():
-        while True:
-            try:
-                chat = chat_stream_queue.get(timeout=1)
-            except queue.Empty:
-                yield f""
-                time.sleep(1)
-            else:
-                yield f"data: {json.dumps(chat)}\n\n"
+        pubsub = redis_client.pubsub()
+        pubsub.subscribe(redis_channel)
+        
+        for message in pubsub.listen():
+            if message.get('data') == 1:
+                continue
+
+            logger.debug(f"channel message={message['data']}")
+            yield f"data: {message['data'].decode('utf8')}\n\n"
 
 
 # Chat application main page
@@ -40,11 +61,18 @@ def api_chat_stream():
 def api_send_chat():
     logger.info(f"user sent message, message={request.json}")
 
-    chat_stream_queue.put(request.json)
+    redis_client.publish(redis_channel, json.dumps(request.json))
 
     return jsonify({"result": True})
 
 
 if __name__ == '__main__':
+    # Set logger
+    configure_logger()
+
+    # Connect to redis
+    redis_client = redis.Redis()
+
+    # Run chat server
     app.run(debug=True)
 

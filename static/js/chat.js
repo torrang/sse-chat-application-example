@@ -46,6 +46,9 @@ window.addEventListener('load', function () {
         chat.appendChild(sender);
         chat.appendChild(message);
         chatBox.appendChild(chat);
+
+        // Move to bottom of chatbox
+        chatBox.scrollTo(0, chatBox.scrollHeight);
     }
 
     document.querySelector("input[name='chatText']").addEventListener("keypress", function(e) {

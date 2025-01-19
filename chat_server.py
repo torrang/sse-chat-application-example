@@ -1,7 +1,7 @@
-import sys
 import json
 import logging
 from typing import Optional
+from datetime import datetime
 from logging.config import dictConfig
 
 import redis
@@ -59,9 +59,11 @@ def api_chat_stream():
 
 @app.route('/api/v1/message', methods=['POST'])
 def api_send_chat():
-    logger.info(f"user sent message, message={request.json}")
+    message = request.json
+    message['timestamp'] = datetime.now().timestamp()
+    logger.info(f"user sent message, message={message}")
 
-    redis_client.publish(redis_channel, json.dumps(request.json))
+    redis_client.publish(redis_channel, json.dumps(message))
 
     return jsonify({"result": True})
 

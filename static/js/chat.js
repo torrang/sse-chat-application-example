@@ -31,11 +31,16 @@ window.addEventListener('load', function () {
 
         const sender = document.createElement("div");
         sender.setAttribute("class", "chat-sender");
-        sender.innerHTML = chatData.sender;
+        sender.textContent = chatData.sender;
 
         const message = document.createElement("div");
         message.setAttribute("class", "chat-message");
-        message.innerHTML = chatData.message;
+        message.textContent = chatData.message;
+
+        const timestamp = document.createElement("div");
+        const messageDate = new Date(chatData.timestamp * 1000);
+        timestamp.setAttribute("class", "chat-timestamp");
+        timestamp.textContent = messageDate.toLocaleString("ko-KR");
 
         // Delete old chat if chats are more than 100
         if (chatBox.children.length >= 100) {
@@ -45,6 +50,7 @@ window.addEventListener('load', function () {
         // Create new chat
         chat.appendChild(sender);
         chat.appendChild(message);
+        chat.appendChild(timestamp);
         chatBox.appendChild(chat);
 
         // Move to bottom of chatbox

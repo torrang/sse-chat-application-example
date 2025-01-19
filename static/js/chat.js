@@ -40,7 +40,7 @@ window.addEventListener('load', function () {
         const timestamp = document.createElement("div");
         const messageDate = new Date(chatData.timestamp * 1000);
         timestamp.setAttribute("class", "chat-timestamp");
-        timestamp.textContent = messageDate.toLocaleString("ko-KR");
+        timestamp.textContent = messageDate.toLocaleString(Intl.NumberFormat().resolvedOptions().locale);
 
         // Delete old chat if chats are more than 100
         if (chatBox.children.length >= 100) {

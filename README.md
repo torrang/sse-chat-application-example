@@ -1,6 +1,7 @@
 # SSE(Server-Sent Events) Chat Application Example
 
-## 
+### 0. Example
+<img src="image.png" alt="Chat page" />
 
 ### 1. What is this project?
 
@@ -19,5 +20,5 @@ Rooms are stored in memory but chat logs aren't stored on anywhere.
 ### 3. How it works?
 
 1. When you join the chat, the server will send a message to the client.
-2. When you send a message, the server will broadcast the message to all connected clients.
-3. When you leave the chat, the server will remove the client from the list of connected clients.
+2. When you send a message, the server will send message to redis server.
+3. Redis broadcasts the message to all connected clients(Pub-Sub).

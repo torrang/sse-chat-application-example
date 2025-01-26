@@ -7,8 +7,6 @@
 
 This project is a simple chat application example of how to use SSE with Flask.
 
-Rooms are stored in memory but chat logs aren't stored on anywhere.
-
 ### 2. How to run this project?
 
 1. Clone this repository

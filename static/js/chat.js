@@ -21,6 +21,11 @@ window.addEventListener('load', function () {
     }
 
     chatStream.onmessage = (event) => {
+        console.log(event);
+    }
+
+    // Event listener: new chat
+    chatStream.addEventListener("new_chat", (event) => {
         // Parse chat
         const chatData = JSON.parse(event.data);
         console.log("server event: ", event);
@@ -55,8 +60,32 @@ window.addEventListener('load', function () {
 
         // Move to bottom of chatbox
         chatBox.scrollTo(0, chatBox.scrollHeight);
-    }
+    });
 
+    // Event listener: new user
+    chatStream.addEventListener("new_user", (event) => {
+        const eventData = JSON.parse(event.data);
+
+        console.log("new user is joined the room");
+        console.log("server event: ", event);
+
+        // Create chat
+        const chat = document.createElement("div");
+        chat.setAttribute("class", "event_new_user");
+
+        const sender = document.createElement("div");
+        sender.setAttribute("class", "message");
+        sender.textContent = eventData.message;
+
+        // Create new chat
+        chat.appendChild(sender);
+        chatBox.appendChild(chat);
+
+        // Move to bottom of chatbox
+        chatBox.scrollTo(0, chatBox.scrollHeight);
+    });
+
+    // Send chat to server
     document.querySelector("input[name='chatText']").addEventListener("keypress", function(e) {
         if (e.key !== 'Enter') {
             return;
